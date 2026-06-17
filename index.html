@@ -1755,92 +1755,43 @@ footer {
 <section class="tab-panel" id="panel-documentation">
 
 
-<!-- SALES TRACKER SUMMARY (two side-by-side cards: funnel | aging-with-trends) -->
-<div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
-
-  <!-- LEFT CARD: Funnel -->
-  <div class="card" style="flex:1 1 0; min-width:360px; border-left: 4px solid var(--bayut-green); margin-bottom:0; display:flex; flex-direction:column; justify-content:center;">
-    <div class="funnel-list">
-      <div class="funnel-row" style="background: var(--g1); width:100%;">
-        <div class="funnel-row-label">Total Bookings</div>
-        <div class="funnel-row-stats">
-          <strong id="stTotal">0</strong>
-          <small>all rows (filtered)</small>
-        </div>
-      </div>
-      <div class="funnel-row" style="background: var(--g3); width:88%;">
-        <div class="funnel-row-label">Sold / Closed Won</div>
-        <div class="funnel-row-stats">
-          <strong id="stSold">0</strong>
-          <small id="stSoldPct">0%</small>
-        </div>
-      </div>
-      <div class="funnel-row" style="background: var(--g2); width:74%;">
-        <div class="funnel-row-label">CDP &mdash; Complete Down Payment</div>
-        <div class="funnel-row-stats">
-          <strong id="stCdp">0</strong>
-          <small id="stCdpPct">0%</small>
-        </div>
-      </div>
-      <div class="funnel-row" style="background:#1d6cb0; width:60%;">
-        <div class="funnel-row-label">PDP &mdash; Partial Down Payment</div>
-        <div class="funnel-row-stats">
-          <strong id="stPdp">0</strong>
-          <small id="stPdpPct">0%</small>
-        </div>
-      </div>
-      <div class="funnel-row" style="background:#f59e0b; width:46%;">
-        <div class="funnel-row-label">Token Payment</div>
-        <div class="funnel-row-stats">
-          <strong id="stToken">0</strong>
-          <small id="stTokenPct">0%</small>
-        </div>
-      </div>
-    </div>
+<!-- SALES TRACKER SUMMARY — top-line cards (compliance + TAT + verified-won) -->
+<div class="kpi-strip" style="margin-bottom:16px;">
+  <div class="kpi" style="--accent-color: var(--bayut-green);">
+    <div class="kpi-label">Booking Form Compliance</div>
+    <div class="kpi-value" id="stBfCompliance">&mdash;</div>
+    <div class="kpi-sub" id="stBfComplianceSub">URF Signed of total</div>
   </div>
-
-  <!-- RIGHT CARD: 6 aging cards in a 2-col grid, each with a 2-week trend pill -->
-  <div class="card" style="flex:1 1 0; min-width:360px; margin-bottom:0;">
-    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
-      <div class="kpi" style="--accent-color: var(--purple);">
-        <div class="kpi-label">Avg Aging Token &rarr; PDP</div>
-        <div class="kpi-value" id="stAgingTtoP">&mdash;</div>
-        <div class="kpi-trend na" id="stAgingTtoPTrend">&mdash;</div>
-        <div class="kpi-sub" id="stAgingTtoPSub">Contract Creation &rarr; Status Date</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--orange);">
-        <div class="kpi-label">Average Aging Booking Form</div>
-        <div class="kpi-value" id="dsAvgAgingBf">&mdash;</div>
-        <div class="kpi-trend na" id="dsAvgAgingBfTrend">&mdash;</div>
-        <div class="kpi-sub" id="dsAvgAgingBfSub">draft cases &middot; creation &rarr; today</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--accent);">
-        <div class="kpi-label">Avg Aging PDP &rarr; CDP</div>
-        <div class="kpi-value" id="stAgingPtoC">&mdash;</div>
-        <div class="kpi-trend na" id="stAgingPtoCTrend">&mdash;</div>
-        <div class="kpi-sub" id="stAgingPtoCSub">Contract Creation &rarr; Status Date</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--g1);">
-        <div class="kpi-label">Average Aging REGA</div>
-        <div class="kpi-value" id="dsAvgAgingRega">&mdash;</div>
-        <div class="kpi-trend na" id="dsAvgAgingRegaTrend">&mdash;</div>
-        <div class="kpi-sub" id="dsAvgAgingRegaSub">RC-pending cases &middot; URF signed &rarr; today</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--g3);">
-        <div class="kpi-label">Avg Aging CDP &rarr; Sold/Closed Won</div>
-        <div class="kpi-value" id="stAgingCtoS">&mdash;</div>
-        <div class="kpi-trend na" id="stAgingCtoSTrend">&mdash;</div>
-        <div class="kpi-sub" id="stAgingCtoSSub">Contract Creation &rarr; Status Date</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--purple);">
-        <div class="kpi-label">Average SPA Aging</div>
-        <div class="kpi-value" id="dsAvgAgingSpa">&mdash;</div>
-        <div class="kpi-trend na" id="dsAvgAgingSpaTrend">&mdash;</div>
-        <div class="kpi-sub" id="dsAvgAgingSpaSub">SPA-pending cases &middot; contract signed + sold &rarr; today</div>
-      </div>
-    </div>
+  <div class="kpi" style="--accent-color: var(--blue);">
+    <div class="kpi-label">REGA Compliance</div>
+    <div class="kpi-value" id="stRegaCompliance">&mdash;</div>
+    <div class="kpi-sub" id="stRegaComplianceSub">RC Signed of total</div>
   </div>
-
+  <div class="kpi" style="--accent-color: var(--purple);">
+    <div class="kpi-label">SPA Compliance</div>
+    <div class="kpi-value" id="stSpaCompliance">&mdash;</div>
+    <div class="kpi-sub" id="stSpaComplianceSub">SPA Signed of total</div>
+  </div>
+  <div class="kpi" style="--accent-color: var(--g1);">
+    <div class="kpi-label">Verified Closed Won</div>
+    <div class="kpi-value" id="stVerifiedWon">&mdash;</div>
+    <div class="kpi-sub" id="stVerifiedWonSub">units verified</div>
+  </div>
+  <div class="kpi" style="--accent-color: var(--orange);">
+    <div class="kpi-label">Avg TAT &mdash; Booking Form</div>
+    <div class="kpi-value" id="stTatBf">&mdash;</div>
+    <div class="kpi-sub" id="stTatBfSub">Creation &rarr; URF Signed</div>
+  </div>
+  <div class="kpi" style="--accent-color: #ca8a04;">
+    <div class="kpi-label">Avg TAT &mdash; REGA Contract</div>
+    <div class="kpi-value" id="stTatRega">&mdash;</div>
+    <div class="kpi-sub" id="stTatRegaSub">URF Signed &rarr; RC Signed</div>
+  </div>
+  <div class="kpi" style="--accent-color: var(--pink);">
+    <div class="kpi-label">Avg TAT &mdash; SPA</div>
+    <div class="kpi-value" id="stTatSpa">&mdash;</div>
+    <div class="kpi-sub" id="stTatSpaSub">Contract Signed + Sold &rarr; SPA Signed</div>
+  </div>
 </div>
 
 <!-- DOCUMENTATION SUMMARY (chevron / phase look) — all 3 strips from Sales Tracker -->
@@ -2155,92 +2106,43 @@ footer {
 <!-- ============ DP PENDING ============ -->
 <section class="tab-panel" id="panel-dp-pending">
 
-<!-- SALES CYCLE SUMMARY (mirrored from Documentation tab — funnel + 6 aging cards) -->
-<div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;">
-
-  <!-- LEFT CARD: Funnel -->
-  <div class="card" style="flex:1 1 0; min-width:360px; border-left: 4px solid var(--bayut-green); margin-bottom:0; display:flex; flex-direction:column; justify-content:center;">
-    <div class="funnel-list">
-      <div class="funnel-row" style="background: var(--g1); width:100%;">
-        <div class="funnel-row-label">Total Bookings</div>
-        <div class="funnel-row-stats">
-          <strong id="sc-stTotal">0</strong>
-          <small>all rows (filtered)</small>
-        </div>
-      </div>
-      <div class="funnel-row" style="background: var(--g3); width:88%;">
-        <div class="funnel-row-label">Sold / Closed Won</div>
-        <div class="funnel-row-stats">
-          <strong id="sc-stSold">0</strong>
-          <small id="sc-stSoldPct">0%</small>
-        </div>
-      </div>
-      <div class="funnel-row" style="background: var(--g2); width:74%;">
-        <div class="funnel-row-label">CDP &mdash; Complete Down Payment</div>
-        <div class="funnel-row-stats">
-          <strong id="sc-stCdp">0</strong>
-          <small id="sc-stCdpPct">0%</small>
-        </div>
-      </div>
-      <div class="funnel-row" style="background:#1d6cb0; width:60%;">
-        <div class="funnel-row-label">PDP &mdash; Partial Down Payment</div>
-        <div class="funnel-row-stats">
-          <strong id="sc-stPdp">0</strong>
-          <small id="sc-stPdpPct">0%</small>
-        </div>
-      </div>
-      <div class="funnel-row" style="background:#f59e0b; width:46%;">
-        <div class="funnel-row-label">Token Payment</div>
-        <div class="funnel-row-stats">
-          <strong id="sc-stToken">0</strong>
-          <small id="sc-stTokenPct">0%</small>
-        </div>
-      </div>
-    </div>
+<!-- SALES CYCLE SUMMARY (mirrored from Documentation tab — top-line compliance + TAT) -->
+<div class="kpi-strip" style="margin-bottom:16px;">
+  <div class="kpi" style="--accent-color: var(--bayut-green);">
+    <div class="kpi-label">Booking Form Compliance</div>
+    <div class="kpi-value" id="sc-stBfCompliance">&mdash;</div>
+    <div class="kpi-sub" id="sc-stBfComplianceSub">URF Signed of total</div>
   </div>
-
-  <!-- RIGHT CARD: 6 aging cards in a 2-col grid -->
-  <div class="card" style="flex:1 1 0; min-width:360px; margin-bottom:0;">
-    <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px;">
-      <div class="kpi" style="--accent-color: var(--purple);">
-        <div class="kpi-label">Avg Aging Token &rarr; PDP</div>
-        <div class="kpi-value" id="sc-stAgingTtoP">&mdash;</div>
-        <div class="kpi-trend na" id="sc-stAgingTtoPTrend">&mdash;</div>
-        <div class="kpi-sub" id="sc-stAgingTtoPSub">Contract Creation &rarr; Status Date</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--orange);">
-        <div class="kpi-label">Average Aging Booking Form</div>
-        <div class="kpi-value" id="sc-dsAvgAgingBf">&mdash;</div>
-        <div class="kpi-trend na" id="sc-dsAvgAgingBfTrend">&mdash;</div>
-        <div class="kpi-sub" id="sc-dsAvgAgingBfSub">draft cases &middot; creation &rarr; today</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--accent);">
-        <div class="kpi-label">Avg Aging PDP &rarr; CDP</div>
-        <div class="kpi-value" id="sc-stAgingPtoC">&mdash;</div>
-        <div class="kpi-trend na" id="sc-stAgingPtoCTrend">&mdash;</div>
-        <div class="kpi-sub" id="sc-stAgingPtoCSub">Contract Creation &rarr; Status Date</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--g1);">
-        <div class="kpi-label">Average Aging REGA</div>
-        <div class="kpi-value" id="sc-dsAvgAgingRega">&mdash;</div>
-        <div class="kpi-trend na" id="sc-dsAvgAgingRegaTrend">&mdash;</div>
-        <div class="kpi-sub" id="sc-dsAvgAgingRegaSub">RC-pending cases &middot; URF signed &rarr; today</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--g3);">
-        <div class="kpi-label">Avg Aging CDP &rarr; Sold/Closed Won</div>
-        <div class="kpi-value" id="sc-stAgingCtoS">&mdash;</div>
-        <div class="kpi-trend na" id="sc-stAgingCtoSTrend">&mdash;</div>
-        <div class="kpi-sub" id="sc-stAgingCtoSSub">Contract Creation &rarr; Status Date</div>
-      </div>
-      <div class="kpi" style="--accent-color: var(--purple);">
-        <div class="kpi-label">Average SPA Aging</div>
-        <div class="kpi-value" id="sc-dsAvgAgingSpa">&mdash;</div>
-        <div class="kpi-trend na" id="sc-dsAvgAgingSpaTrend">&mdash;</div>
-        <div class="kpi-sub" id="sc-dsAvgAgingSpaSub">SPA-pending cases &middot; contract signed + sold &rarr; today</div>
-      </div>
-    </div>
+  <div class="kpi" style="--accent-color: var(--blue);">
+    <div class="kpi-label">REGA Compliance</div>
+    <div class="kpi-value" id="sc-stRegaCompliance">&mdash;</div>
+    <div class="kpi-sub" id="sc-stRegaComplianceSub">RC Signed of total</div>
   </div>
-
+  <div class="kpi" style="--accent-color: var(--purple);">
+    <div class="kpi-label">SPA Compliance</div>
+    <div class="kpi-value" id="sc-stSpaCompliance">&mdash;</div>
+    <div class="kpi-sub" id="sc-stSpaComplianceSub">SPA Signed of total</div>
+  </div>
+  <div class="kpi" style="--accent-color: var(--g1);">
+    <div class="kpi-label">Verified Closed Won</div>
+    <div class="kpi-value" id="sc-stVerifiedWon">&mdash;</div>
+    <div class="kpi-sub" id="sc-stVerifiedWonSub">units verified</div>
+  </div>
+  <div class="kpi" style="--accent-color: var(--orange);">
+    <div class="kpi-label">Avg TAT &mdash; Booking Form</div>
+    <div class="kpi-value" id="sc-stTatBf">&mdash;</div>
+    <div class="kpi-sub" id="sc-stTatBfSub">Creation &rarr; URF Signed</div>
+  </div>
+  <div class="kpi" style="--accent-color: #ca8a04;">
+    <div class="kpi-label">Avg TAT &mdash; REGA Contract</div>
+    <div class="kpi-value" id="sc-stTatRega">&mdash;</div>
+    <div class="kpi-sub" id="sc-stTatRegaSub">URF Signed &rarr; RC Signed</div>
+  </div>
+  <div class="kpi" style="--accent-color: var(--pink);">
+    <div class="kpi-label">Avg TAT &mdash; SPA</div>
+    <div class="kpi-value" id="sc-stTatSpa">&mdash;</div>
+    <div class="kpi-sub" id="sc-stTatSpaSub">Contract Signed + Sold &rarr; SPA Signed</div>
+  </div>
 </div>
 
 <div class="panel-intro">
@@ -4140,14 +4042,16 @@ function setBadge(section, isLive) {
    Copies textContent for plain values; for trend pills also copies className,
    innerHTML, and title so the colored arrow + tooltip carry over. */
 const SC_TEXT_MIRROR_IDS = [
-  'stTotal','stSold','stSoldPct','stCdp','stCdpPct','stPdp','stPdpPct','stToken','stTokenPct',
-  'stAgingTtoP','stAgingTtoPSub','stAgingPtoC','stAgingPtoCSub','stAgingCtoS','stAgingCtoSSub',
-  'dsAvgAgingBf','dsAvgAgingBfSub','dsAvgAgingRega','dsAvgAgingRegaSub','dsAvgAgingSpa','dsAvgAgingSpaSub',
+  /* Top-line cards (compliance + verified-won + TATs) */
+  'stBfCompliance','stBfComplianceSub',
+  'stRegaCompliance','stRegaComplianceSub',
+  'stSpaCompliance','stSpaComplianceSub',
+  'stVerifiedWon','stVerifiedWonSub',
+  'stTatBf','stTatBfSub',
+  'stTatRega','stTatRegaSub',
+  'stTatSpa','stTatSpaSub',
 ];
-const SC_TREND_MIRROR_IDS = [
-  'stAgingTtoPTrend','stAgingPtoCTrend','stAgingCtoSTrend',
-  'dsAvgAgingBfTrend','dsAvgAgingRegaTrend','dsAvgAgingSpaTrend',
-];
+const SC_TREND_MIRROR_IDS = [];
 function mirrorSalesCycleSummary() {
   SC_TEXT_MIRROR_IDS.forEach(id => {
     const src = document.getElementById(id);
@@ -4239,122 +4143,97 @@ function trendOneDate(rows, isInState, getStart) {
   return computeTrend(cc ? cs / cc : null, cc, pc ? ps / pc : null, pc);
 }
 
+/* Sales Tracker Summary — 7 top-line cards.
+     Compliance % = (units with col = "Signed") / total filtered bookings × 100
+     Verified Closed Won = count of rows with verified_closed_won truthy OR
+                            verified_closed_won_date populated
+     TATs are signed-only averages between two date columns. */
 function renderSalesTrackerSummary() {
   const rows = dataStore.sales_tracker;
   const f = getActiveFilters();
   const filtered = rows.length ? filterBookingRows(rows, f) : [];
   const total = filtered.length;
 
-  /* Diagnostic: when a director filter is active, break down where rows came from
-     and check for duplicate contract_ids that could inflate the count. */
-  if (f.director && filtered.length) {
-    const inLvl2 = filtered.filter(r => String(r.manager_level_2_name || '').toLowerCase() === f.director).length;
-    const inLvl3 = filtered.filter(r => String(r.manager_level_3_name || '').toLowerCase() === f.director).length;
-    const uniqContracts = new Set(filtered.map(r => r.contract_id).filter(Boolean));
-    const uniqLeads     = new Set(filtered.map(r => r.lead_id).filter(Boolean));
-    const statusBreakdown = {};
-    filtered.forEach(r => {
-      const s = String(r.inventory_status || '').trim();
-      statusBreakdown[s] = (statusBreakdown[s] || 0) + 1;
-    });
-    console.info('[DirectorFilter]', f.director, {
-      total_matched: filtered.length,
-      matched_via_level_2: inLvl2,
-      matched_via_level_3: inLvl3,
-      distinct_contract_ids: uniqContracts.size,
-      distinct_lead_ids: uniqLeads.size,
-      inventory_status_breakdown: statusBreakdown,
-    });
+  function setVal(id, v)    { const el = document.getElementById(id); if (el) el.textContent = v; }
+  const fmtPct = pct => isFinite(pct) ? pct.toFixed(2) + '%' : '—';
+  const fmtTat = (d, n) => (d != null && isFinite(d) && n > 0) ? d.toFixed(1) + 'd' : '—';
+
+  if (!total) {
+    ['stBfCompliance','stRegaCompliance','stSpaCompliance','stVerifiedWon','stTatBf','stTatRega','stTatSpa']
+      .forEach(id => setVal(id, '—'));
+    setVal('stBfComplianceSub',   'no rows after filters');
+    setVal('stRegaComplianceSub', 'no rows after filters');
+    setVal('stSpaComplianceSub',  'no rows after filters');
+    setVal('stVerifiedWonSub',    'no rows after filters');
+    setVal('stTatBfSub',          'Creation → URF Signed');
+    setVal('stTatRegaSub',        'URF Signed → RC Signed');
+    setVal('stTatSpaSub',         'Contract Signed + Sold → SPA Signed');
+    mirrorSalesCycleSummary();
+    return;
   }
 
-  /* Tolerant field lookup — returns the first non-empty value among candidate keys */
-  function pick(r, keys) {
-    for (const k of keys) {
-      if (r[k] !== undefined && r[k] !== null && String(r[k]).trim() !== '') return r[k];
-    }
-    return '';
-  }
-  const STATUS_KEYS   = ['inventory_status','status','inventorystatus','stage','deal_stage','current_status'];
-  const CREATION_KEYS = ['contract_creation_date','contract_created_date','contract_creation','creation_date','contract_created','contractcreationdate'];
-  const STATUS_DATE_KEYS = ['contract_status_date','contract_status','status_date','latest_status_date','contractstatusdate'];
+  /* ---------- Compliance % (Signed / total) ---------- */
+  const isSigned = (r, col) => classifyDocSimple(r[col]) === 'signed';
+  const bfSigned   = filtered.filter(r => isSigned(r, 'urf_status')).length;
+  const regaSigned = filtered.filter(r => isSigned(r, 'rc_status')).length;
+  const spaSigned  = filtered.filter(r => isSigned(r, 'spa_status')).length;
 
-  const statusOf = r => String(pick(r, STATUS_KEYS) || '').trim().toLowerCase();
-  const isSold  = r => { const s = statusOf(r); return s.includes('sold') || s.includes('closed won'); };
-  const isToken = r => { const s = statusOf(r); return s.includes('token'); };
-  const isPdp   = r => { const s = statusOf(r); return s.includes('partial') || s === 'pdp'; };
-  /* CDP excludes Sold/Closed Won (which is its own tile now) */
-  const isCdp   = r => {
-    if (isSold(r)) return false;
-    const s = statusOf(r);
-    return s.includes('complete') || s === 'cdp';
+  const bfPct   = (bfSigned   / total) * 100;
+  const regaPct = (regaSigned / total) * 100;
+  const spaPct  = (spaSigned  / total) * 100;
+
+  setVal('stBfCompliance',      fmtPct(bfPct));
+  setVal('stBfComplianceSub',   bfSigned.toLocaleString() + ' of ' + total.toLocaleString() + ' URF Signed');
+  setVal('stRegaCompliance',    fmtPct(regaPct));
+  setVal('stRegaComplianceSub', regaSigned.toLocaleString() + ' of ' + total.toLocaleString() + ' RC Signed');
+  setVal('stSpaCompliance',     fmtPct(spaPct));
+  setVal('stSpaComplianceSub',  spaSigned.toLocaleString() + ' of ' + total.toLocaleString() + ' SPA Signed');
+
+  /* ---------- Verified Closed Won ----------
+     Truthy flag (Yes / True / 1) OR a populated verified_closed_won_date. */
+  const verifiedWon = filtered.filter(r => {
+    const flag = String(r.verified_closed_won || '').toLowerCase().trim();
+    if (flag === 'yes' || flag === 'true' || flag === '1') return true;
+    const d = parseDateFlexible(r.verified_closed_won_date);
+    return !!d;
+  }).length;
+  setVal('stVerifiedWon',    verifiedWon.toLocaleString());
+  setVal('stVerifiedWonSub', total ? ((verifiedWon / total) * 100).toFixed(1) + '% of ' + total.toLocaleString() + ' bookings' : 'no bookings');
+
+  /* ---------- TATs (in days), Signed-only averages ---------- */
+  const isSold = r => {
+    const inv = String(r.inventory_status || '').toLowerCase().trim();
+    return inv === 'sold/closed won' || inv === 'sold' || inv === 'closed won';
   };
-
-  const tokenRows = filtered.filter(isToken);
-  const pdpRows   = filtered.filter(isPdp);
-  const cdpRows   = filtered.filter(isCdp);
-  const soldRows  = filtered.filter(isSold);
-
-  const pct = (n) => total ? (n / total * 100).toFixed(1) + '%' : '0%';
-
-  document.getElementById('stTotal').textContent    = total.toLocaleString();
-  document.getElementById('stToken').textContent    = tokenRows.length.toLocaleString();
-  document.getElementById('stTokenPct').textContent = pct(tokenRows.length);
-  document.getElementById('stPdp').textContent      = pdpRows.length.toLocaleString();
-  document.getElementById('stPdpPct').textContent   = pct(pdpRows.length);
-  document.getElementById('stCdp').textContent      = cdpRows.length.toLocaleString();
-  document.getElementById('stCdpPct').textContent   = pct(cdpRows.length);
-  document.getElementById('stSold').textContent     = soldRows.length.toLocaleString();
-  document.getElementById('stSoldPct').textContent  = pct(soldRows.length);
-
-  /* Aging: contract_status_date - contract_creation_date.
-     Contract is created at Token, so for PDP rows this diff = Token→PDP.
-     For CDP/Sold rows the diff = Token→CDP since status_date is overwritten
-     at each transition (we can't isolate PDP→CDP per-row). */
-  function avgAging(subset) {
-    let sum = 0, count = 0;
-    subset.forEach(r => {
-      const d1 = parseDateFlexible(pick(r, CREATION_KEYS));
-      const d2 = parseDateFlexible(pick(r, STATUS_DATE_KEYS));
-      if (d1 && d2) {
-        const days = (new Date(d2) - new Date(d1)) / 86400000;
-        if (days >= 0) { sum += days; count++; }
-      }
+  function daysBetween(a, b) {
+    const d1 = parseDateFlexible(a), d2 = parseDateFlexible(b);
+    if (!d1 || !d2) return null;
+    const d = (new Date(d2) - new Date(d1)) / 86400000;
+    return (d >= 0 && d < 365 * 10) ? d : null;
+  }
+  function avgTat(predicate, startCol, endCol) {
+    let sum = 0, cnt = 0;
+    filtered.forEach(r => {
+      if (!predicate(r)) return;
+      const d = daysBetween(r[startCol], r[endCol]);
+      if (d != null) { sum += d; cnt++; }
     });
-    return { avg: count ? sum / count : null, count };
+    return { avg: cnt ? sum / cnt : null, count: cnt };
   }
 
-  const tToP = avgAging(pdpRows);
-  const pToC = avgAging(cdpRows);
-  const cToS = avgAging(soldRows);
+  const tatBf   = avgTat(r => isSigned(r, 'urf_status'),                                       'booking_form_creation_date', 'urf_status_date');
+  const tatRega = avgTat(r => isSigned(r, 'rc_status') && isSigned(r, 'urf_status'),           'urf_status_date',            'rc_status_date');
+  const tatSpa  = avgTat(r => isSigned(r, 'spa_status') && isSigned(r, 'contract_status') && isSold(r),
+                                                                                                'contract_status_date',       'spa_status_date');
 
-  document.getElementById('stAgingTtoP').textContent    = tToP.avg === null ? '—' : tToP.avg.toFixed(1) + 'd';
-  document.getElementById('stAgingTtoPSub').textContent = tToP.count ? 'over ' + tToP.count + ' PDP bookings' : 'no PDP rows with dates';
-  document.getElementById('stAgingPtoC').textContent    = pToC.avg === null ? '—' : pToC.avg.toFixed(1) + 'd';
-  document.getElementById('stAgingPtoCSub').textContent = pToC.count ? 'over ' + pToC.count + ' CDP bookings' : 'no CDP rows with dates';
-  document.getElementById('stAgingCtoS').textContent    = cToS.avg === null ? '—' : cToS.avg.toFixed(1) + 'd';
-  document.getElementById('stAgingCtoSSub').textContent = cToS.count ? 'over ' + cToS.count + ' Sold/Closed Won bookings' : 'no Sold/Closed Won rows with dates';
-
-  /* 2-week stock-style trends — partition rows by contract_status_date cohort */
-  const getStart  = r => r.contract_creation_date;
-  const getCohort = r => r.contract_status_date;
-  setTrend('stAgingTtoPTrend', trendTwoDate(filtered, isPdp,  getStart, getCohort));
-  setTrend('stAgingPtoCTrend', trendTwoDate(filtered, isCdp,  getStart, getCohort));
-  setTrend('stAgingCtoSTrend', trendTwoDate(filtered, isSold, getStart, getCohort));
+  setVal('stTatBf',     fmtTat(tatBf.avg,   tatBf.count));
+  setVal('stTatBfSub',  tatBf.count   ? 'over ' + tatBf.count   + ' signed cases · Creation → URF Signed'             : 'Creation → URF Signed');
+  setVal('stTatRega',   fmtTat(tatRega.avg, tatRega.count));
+  setVal('stTatRegaSub', tatRega.count ? 'over ' + tatRega.count + ' signed cases · URF Signed → RC Signed'             : 'URF Signed → RC Signed');
+  setVal('stTatSpa',    fmtTat(tatSpa.avg,  tatSpa.count));
+  setVal('stTatSpaSub', tatSpa.count  ? 'over ' + tatSpa.count  + ' signed cases · Contract Signed + Sold → SPA Signed' : 'Contract Signed + Sold → SPA Signed');
 
   mirrorSalesCycleSummary();
-
-  /* Diagnostic: log a sample row + counts so we can see why aging may be blank. */
-  if (rows.length && (tToP.avg === null && pToC.avg === null)) {
-    console.warn('[SalesTrackerSummary] aging blank.', {
-      total_rows_in_sales_tracker: rows.length,
-      after_filters: filtered.length,
-      token_rows: tokenRows.length,
-      pdp_rows: pdpRows.length,
-      cdp_rows: cdpRows.length,
-      sample_row_keys: filtered[0] ? Object.keys(filtered[0]) : [],
-      sample_row: filtered[0] || null,
-    });
-  }
 }
 
 /* Booking Form status classifier — returns 'draft' | 'complete' | 'signed' | 'missing'.
@@ -4532,41 +4411,12 @@ function renderDocumentationSummary() {
     if (days !== null) { spaSum += days; spaCnt++; }
   });
 
-  const setAging = (idVal, idSub, sum, cnt, subLabel) => {
-    document.getElementById(idVal).textContent = cnt ? (sum / cnt).toFixed(1) + 'd' : '—';
-    document.getElementById(idSub).textContent = cnt ? 'over ' + cnt + ' ' + subLabel : subLabel;
-  };
-  setAging('dsAvgAgingBf',   'dsAvgAgingBfSub',   bfSum,   bfCnt,   'BF-pending cases');
-  setAging('dsAvgAgingRega', 'dsAvgAgingRegaSub', regaSum, regaCnt, 'RC-pending cases');
-  setAging('dsAvgAgingSpa',  'dsAvgAgingSpaSub',  spaSum,  spaCnt,  'SPA-pending cases');
-
-  /* 2-week stock-style trends — same predicate / cohort-date pattern. */
-  setTrend('dsAvgAgingBfTrend', trendOneDate(
-    filtered,
-    r => {
-      const c = classifyDocSimple(r.urf_status);
-      return c !== 'signed' && c !== 'cancelled';
-    },
-    r => r.booking_form_creation_date || r.contract_creation_date,
-  ));
-  setTrend('dsAvgAgingRegaTrend', trendOneDate(
-    filtered,
-    r => {
-      if (!isSigned(r, 'urf_status')) return false;
-      const c = classifyDocSimple(r.rc_status);
-      return c !== 'signed' && c !== 'cancelled';
-    },
-    r => r.urf_status_date,
-  ));
-  setTrend('dsAvgAgingSpaTrend', trendOneDate(
-    filtered,
-    r => {
-      if (!isSigned(r, 'contract_status') || !isSold(r)) return false;
-      const c = classifyDocSimple(r.spa_status);
-      return c !== 'signed' && c !== 'cancelled';
-    },
-    r => r.contract_status_date,
-  ));
+  /* Legacy aging KPI IDs (dsAvgAgingBf, dsAvgAgingRega, dsAvgAgingSpa) were
+     removed when the Sales Tracker Summary collapsed into 7 top-line cards.
+     The aging numbers + trends are still computed above for any potential
+     re-use, but the DOM writes are intentionally dropped — guards below
+     in case the IDs are ever re-introduced. */
+  void [bfSum, bfCnt, regaSum, regaCnt, spaSum, spaCnt];
 
   /* ---- Monthly pending charts (stacked bars; tooltip shows reasons) ----
      Downstream functions still take a cidIndex argument for backward
