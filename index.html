@@ -6,6 +6,8 @@
 <title>Bayut KSA - Sales Operations Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <style>
 :root {
   --bg: #f4f8f5;
@@ -2680,7 +2682,11 @@ footer {
       <h2>Sales Hot Line — Contact Center Report</h2>
       <div class="panel-sub">Inbound + Outbound call performance &middot; SLA &middot; agent productivity. Source: Agent Summary Tracker, Call Center Tracker, SLA Tracker.</div>
     </div>
-    <span class="data-badge demo" id="badge-hotline">Demo Data</span>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="btn-primary" id="btnHotlineDownload" style="padding:7px 14px; font-size:.76rem;" title="Download the Sales Hot Line dashboard as a PDF report">Download Report</button>
+      <button class="btn-secondary" id="btnHotlineEmail" style="padding:7px 14px; font-size:.76rem;" title="Open your default mail client with the daily Hot Line report pre-filled">Email Report</button>
+      <span class="data-badge demo" id="badge-hotline">Demo Data</span>
+    </div>
   </div>
 
   <!-- ===== 1. INBOUND CALLS REPORT — YESTERDAY ===== -->
@@ -3207,22 +3213,17 @@ footer {
     <div class="kpi vion-clickable" id="vion-card-booked" style="--accent-color: var(--g3);">
       <div class="kpi-label">Total Units Booked</div>
       <div class="kpi-value" id="vion-booked">&mdash;</div>
-      <div class="kpi-sub" id="vion-booked-sub">click to expand by status</div>
+      <div class="kpi-sub" id="vion-booked-sub">units on Token &middot; click to expand</div>
+    </div>
+    <div class="kpi" style="--accent-color: var(--blue)">
+      <div class="kpi-label">PDP Units</div>
+      <div class="kpi-value" id="vion-pdp">&mdash;</div>
+      <div class="kpi-sub" id="vion-pdp-sub">Partial Down Payment</div>
     </div>
     <div class="kpi" style="--accent-color: var(--g2)">
       <div class="kpi-label">Total Units Sold</div>
       <div class="kpi-value" id="vion-sold">&mdash;</div>
       <div class="kpi-sub" id="vion-sold-sub">Sold / Closed Won</div>
-    </div>
-    <div class="kpi" style="--accent-color: var(--blue)">
-      <div class="kpi-label">Brokerage Revenue</div>
-      <div class="kpi-value" id="vion-brokerage">&mdash;</div>
-      <div class="kpi-sub">2.88% of booked deal prices</div>
-    </div>
-    <div class="kpi" style="--accent-color: var(--purple)">
-      <div class="kpi-label">Developer Fee Revenue</div>
-      <div class="kpi-value" id="vion-devfee">&mdash;</div>
-      <div class="kpi-sub">5.75% of booked deal prices</div>
     </div>
   </div>
 
@@ -8019,8 +8020,8 @@ function pyRenderMonthlyTrend(keys, map) {
      • Sales Cycle Milestone chart (units by upcoming stage-expiry)
      • Documentation funnel tables (Booking Form / REGA / SPA) */
 const VION_TOTAL_INVENTORY = 24;
-const VION_BROKERAGE_RATE  = 0.0288;   /* 2.88% */
-const VION_DEVFEE_RATE     = 0.0575;   /* 5.75% */
+/* Revenue-rate constants removed — Brokerage + Developer Fee KPI cards
+   were dropped from the VION top-line strip. */
 const VION_STAGE_TAT = {                /* days each stage has before expiring */
   'token payment':         { days: 10, next: 'Partial Down Payment',   color: '#ca8a04' },
   'partial down payment':  { days: 20, next: 'Complete Down Payment',  color: '#1d6cb0' },
@@ -8095,21 +8096,29 @@ function renderBayutDevelopment() {
   /* ---------- TOP-LINE KPIs ---------- */
   vionSet('vion-total', VION_TOTAL_INVENTORY.toString());
 
-  /* Booked = inventory_status ∈ {Token, PDP, CDP, Sold/Closed Won} */
+  /* bookedRows = every unit past Token onwards (used downstream by the booking
+     chart, milestone chart, documentation funnels, lifecycle funnel and
+     director engagement cards). The KPI cards below only surface specific
+     slices of it — Token, PDP, Sold — per the current spec. */
   const statusOf = r => String(r.inventory_status || '').toLowerCase().trim();
   const bookedRows = vionRows.filter(r => VION_BOOKED_STATUSES.indexOf(statusOf(r)) >= 0);
+  const tokenRows  = vionRows.filter(r => statusOf(r) === 'token payment');
+  const pdpRows    = vionRows.filter(r => statusOf(r) === 'partial down payment');
   const soldRows   = vionRows.filter(r => { const s = statusOf(r); return s === 'sold/closed won' || s === 'sold' || s === 'closed won'; });
 
-  vionSet('vion-booked', bookedRows.length.toString());
-  vionSet('vion-booked-sub', VION_TOTAL_INVENTORY ? ((bookedRows.length / VION_TOTAL_INVENTORY) * 100).toFixed(1) + '% of inventory · click to expand' : 'click to expand by status');
+  /* "Total Units Booked" now shows only units currently on Token Payment. */
+  vionSet('vion-booked', tokenRows.length.toString());
+  vionSet('vion-booked-sub', VION_TOTAL_INVENTORY
+    ? ((tokenRows.length / VION_TOTAL_INVENTORY) * 100).toFixed(1) + '% of inventory · click to expand'
+    : 'units on Token · click to expand');
+
+  vionSet('vion-pdp',     pdpRows.length.toString());
+  vionSet('vion-pdp-sub', bookedRows.length
+    ? ((pdpRows.length / bookedRows.length) * 100).toFixed(1) + '% of booked · Partial Down Payment'
+    : 'Partial Down Payment');
 
   vionSet('vion-sold', soldRows.length.toString());
   vionSet('vion-sold-sub', bookedRows.length ? ((soldRows.length / bookedRows.length) * 100).toFixed(1) + '% of booked' : 'Sold / Closed Won');
-
-  /* Revenue = % of booked-units' deal prices summed */
-  const bookedSum = bookedRows.reduce((s, r) => s + vionDealPrice(r), 0);
-  vionSet('vion-brokerage', vionFmtSAR(bookedSum * VION_BROKERAGE_RATE));
-  vionSet('vion-devfee',    vionFmtSAR(bookedSum * VION_DEVFEE_RATE));
 
   /* ---------- BOOKED BREAKDOWN (expand panel) ---------- */
   const stageDefs = [
@@ -9522,6 +9531,178 @@ document.addEventListener('click', e => {
 
 document.getElementById('btnDocDrillClose').addEventListener('click', docDrillClose);
 document.getElementById('btnDocDrillExport').addEventListener('click', docDrillExportCsv);
+
+/* ============ Sales Hot Line — Daily Email Report ============
+   Builds a plain-text snapshot of the Hot Line KPIs currently displayed
+   on the panel (Yesterday + MTD), then either opens the user's default
+   mail client via mailto: or copies the body to the clipboard.
+   No backend / SMTP — sending still happens through the mail client. */
+const HOTLINE_EMAIL_TO = 'waheed.rasool@bayut.sa';
+
+function hlBuildDailyReport() {
+  const t = (id, fb = '—') => {
+    const el = document.getElementById(id);
+    return (el && el.textContent && el.textContent.trim() !== '—') ? el.textContent.trim() : fb;
+  };
+  const today = new Date();
+  const dayStamp = today.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+  const subject = 'Sales Hot Line — Daily Report (' + dayStamp + ')';
+
+  const lines = [];
+  lines.push('SALES HOT LINE — Contact Center Report');
+  lines.push('Report date: ' + dayStamp);
+  lines.push('==================================================');
+  lines.push('');
+  lines.push('INBOUND — YESTERDAY');
+  lines.push('  Calls Landed       : ' + t('hlYdayInLanded'));
+  lines.push('  Calls Answered     : ' + t('hlYdayInAnswered'));
+  lines.push('  Avg Wait Time      : ' + t('hlYdayInWait'));
+  lines.push('  AHT Inbound        : ' + t('hlYdayInAht'));
+  lines.push('  Service Level (SLA): ' + t('hlYdaySla'));
+  lines.push('  Call Answering %   : ' + t('hlYdayInCar'));
+  lines.push('  Abandoned Calls    : ' + t('hlYdayInAbandoned'));
+  lines.push('');
+  lines.push('OUTBOUND — YESTERDAY');
+  lines.push('  Outbound Calls     : ' + t('hlYdayOutCalls'));
+  lines.push('  AHT Outbound       : ' + t('hlYdayOutAht'));
+  lines.push('  Connected Ratio    : ' + t('hlYdayOutConnect'));
+  lines.push('');
+  lines.push('INBOUND — MTD');
+  lines.push('  Calls Landed       : ' + t('hlMtdInLanded'));
+  lines.push('  Calls Answered     : ' + t('hlMtdInAnswered'));
+  lines.push('  Avg Wait Time      : ' + t('hlMtdInWait'));
+  lines.push('  AHT Inbound        : ' + t('hlMtdInAht'));
+  lines.push('  Service Level (SLA): ' + t('hlMtdSla'));
+  lines.push('  Call Answering %   : ' + t('hlMtdInCar'));
+  lines.push('  Abandoned Calls    : ' + t('hlMtdInAbandoned'));
+  lines.push('');
+  lines.push('OUTBOUND — MTD');
+  lines.push('  Outbound Calls     : ' + t('hlMtdOutCalls'));
+  lines.push('  AHT Outbound       : ' + t('hlMtdOutAht'));
+  lines.push('  Connected Ratio    : ' + t('hlMtdOutConnect'));
+  lines.push('');
+  lines.push('TEAM');
+  lines.push('  Manning (Yesterday): ' + t('hlManningYday'));
+  lines.push('');
+  lines.push('--------------------------------------------------');
+  lines.push('Generated by Bayut KSA Sales Operations Dashboard.');
+
+  return { subject, body: lines.join('\r\n') };
+}
+
+function hlEmailDailyReport() {
+  const { subject, body } = hlBuildDailyReport();
+  const href = 'mailto:' + encodeURIComponent(HOTLINE_EMAIL_TO)
+    + '?subject=' + encodeURIComponent(subject)
+    + '&body='    + encodeURIComponent(body);
+  /* Some browsers limit URL length (~2000 chars). Our body is ~1.5 KB — safe. */
+  window.location.href = href;
+}
+
+async function hlCopyDailyReport() {
+  const { subject, body } = hlBuildDailyReport();
+  const text = 'To: ' + HOTLINE_EMAIL_TO + '\r\nSubject: ' + subject + '\r\n\r\n' + body;
+  const btn = document.getElementById('btnHotlineCopy');
+  try {
+    await navigator.clipboard.writeText(text);
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = orig; }, 1500);
+    }
+  } catch (e) {
+    /* Fallback for older browsers / non-secure contexts. */
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch (_) {}
+    document.body.removeChild(ta);
+    if (btn) {
+      const orig = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      setTimeout(() => { btn.textContent = orig; }, 1500);
+    }
+  }
+}
+
+document.getElementById('btnHotlineEmail').addEventListener('click', hlEmailDailyReport);
+
+/* ============ Sales Hot Line — Download as PDF ============
+   Snapshots the entire Sales Hot Line panel as-rendered (charts, KPIs,
+   tables) and downloads it as a multi-page A4 PDF the user can share.
+   Uses html2canvas to render the panel to an off-screen canvas, then
+   jsPDF to slice the canvas across A4 pages and trigger a file save. */
+async function hlDownloadReport() {
+  const panel = document.getElementById('panel-sales-hotline');
+  if (!panel) return;
+  if (typeof html2canvas !== 'function' || !window.jspdf || !window.jspdf.jsPDF) {
+    alert('PDF libraries failed to load. Check your network connection and refresh.');
+    return;
+  }
+
+  const btn = document.getElementById('btnHotlineDownload');
+  const actions = btn ? btn.parentElement : null;
+  const origLabel = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Building PDF…'; }
+  /* Hide the action buttons so they don't appear in the captured PDF. */
+  if (actions) actions.style.visibility = 'hidden';
+  /* Briefly defer so the browser repaints with the buttons hidden. */
+  await new Promise(r => setTimeout(r, 50));
+
+  try {
+    /* Capture the panel — backgroundColor opaque to handle dark mode. */
+    const isDark = document.body.classList.contains('dark');
+    const bg = isDark ? '#0f1714' : '#ffffff';
+    const canvas = await html2canvas(panel, {
+      scale: 2,
+      backgroundColor: bg,
+      logging: false,
+      useCORS: true,
+      windowWidth: panel.scrollWidth,
+      windowHeight: panel.scrollHeight,
+    });
+
+    /* Build a multi-page A4 PDF by slicing the long capture into page-tall chunks. */
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageW = pdf.internal.pageSize.getWidth();    /* 210mm */
+    const pageH = pdf.internal.pageSize.getHeight();   /* 297mm */
+
+    /* Convert: canvas px → page mm. We scale the image width to the page,
+       then figure out how many mm of the original image fit on each page. */
+    const imgW   = pageW;
+    const imgH   = canvas.height * (pageW / canvas.width);
+    let heightLeft = imgH;
+    const imgData = canvas.toDataURL('image/png');
+
+    /* First page */
+    pdf.addImage(imgData, 'PNG', 0, 0, imgW, imgH);
+    heightLeft -= pageH;
+
+    /* Additional pages — shift the image up by pageH each time. */
+    while (heightLeft > 0) {
+      pdf.addPage();
+      const offset = -(imgH - heightLeft);
+      pdf.addImage(imgData, 'PNG', 0, offset, imgW, imgH);
+      heightLeft -= pageH;
+    }
+
+    const today = new Date();
+    const stamp = today.getFullYear() + '-'
+      + String(today.getMonth() + 1).padStart(2, '0') + '-'
+      + String(today.getDate()).padStart(2, '0');
+    pdf.save('sales-hotline-report-' + stamp + '.pdf');
+  } catch (e) {
+    console.error('[Hotline] PDF generation failed:', e);
+    alert('Could not generate the PDF. See the browser console for details.');
+  } finally {
+    if (actions) actions.style.visibility = '';
+    if (btn) { btn.disabled = false; btn.textContent = origLabel || 'Download Report'; }
+  }
+}
+
+document.getElementById('btnHotlineDownload').addEventListener('click', hlDownloadReport);
 
 document.getElementById('projectStatusSelect').addEventListener('change', (e) => {
   const proj = e.target.value;
